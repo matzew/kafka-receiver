@@ -42,14 +42,15 @@ func main() {
 	signal.Notify(signals, os.Interrupt)
 
 	consumed := 0
-ConsumerLoop:
-	for {
+
+	running := true
+	for running {
 		select {
 		case msg := <-partitionConsumer.Messages():
-			log.Printf("Consumed message offset %s", msg.Value)
+			log.Printf("Consumed message: %s", msg.Value)
 			consumed++
 		case <-signals:
-			break ConsumerLoop
+			running = false
 		}
 	}
 
